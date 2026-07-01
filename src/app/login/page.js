@@ -1,17 +1,50 @@
 'use client';
 import Link from "next/link";
-import{auth, googleProvider} from "@lib/firebase";
-import { signinWithPopup } from "firebase/auth";
+import{auth, googleProvider} from "@/app/lib/firebase";
+import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import {useRouter} from "next/navigation";
- 
 
 
 export default function LoginPage(){
-    return(
+    const router = useRouter();
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const email = formData.get("email");
+        const password = formData.get("password");
+
+        if (password.length < 6) {
+            alert("Password should be at least 6 characters long!");
+            return;
+        }
+
+          try {
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            console.log("Login successful:", result.user);
+        } 
+        catch (error) {
+            console.error("Login error: ", error.message);
+            if (error.code === "auth/invalid-credential") {
+                alert("Invalid credentials. Please try again.");
+            }
+
+        }
+    }
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            console.log("Google login successful:", result.user);
+            router.push("/dashboard");
+        
+        } 
+        catch (error) {
+            console.error("Login error: ", error.message);
+        }
+    }
+    return(        
         <main className="min-h-screen bg-amber-50 flex flex-col items-center justify-center p-6 text-left">
 
-            {/*FEATURES SECTION*/}
-            <form className="bg-transparent border border-orange-600 shadow-md rounded-xl px-8 pt-6 pb-8 mb-4 w-full max-w-sm">
+            <form className="bg-transparent border border-orange-600 shadow-md rounded-xl px-8 pt-6 pb-8 mb-4 w-full max-w-sm" onSubmit={handleLogin}>
                 
                 <h1 className="text-3xl font-black text-orange-600 mb-3">
                     <Link href="/" className="hover:text-orange-800 transition-colors">
