@@ -17,6 +17,7 @@ export const metadata = {
   description: "Your one-stop tool for filipino vendors",
 };
 
+
 export default function RootLayout({ children }) {
   return (
     <html
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         {children}
+        
       </body>
     </html>
   );

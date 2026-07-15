@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-import {createUserWithEmailAndPassword } from "firebase/auth";
+import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 import {auth}  from "@/app/lib/firebase";
 import {useRouter} from "next/navigation";
 
@@ -29,18 +29,23 @@ export default function SignupPage(){
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            // Update the user's profile with their first and last name
+            await updateProfile(userCredential.user, { displayName: `${firstName} ${lastName}` });
             console.log("User created:", userCredential.user);
             // Redirect to dashboard or another page
             alert("Signup successful! You can now log in.");
+            console.log("Signup successful! You can now log in.");
             router.push("/login");
 
         } catch (error) {
             console.error("Signup error: ", error.message);
             if (error.code === "auth/email-already-in-use") {
                 alert("Email already in use. Please try logging in.");
+                console.log("Email already in use. Please try logging in.");
             }
             if (error.code === "auth/invalid-email") {
                 alert("Invalid email format. Please enter a valid email.");
+                console.log("Invalid email format. Please enter a valid email.");
             }
         }
     };

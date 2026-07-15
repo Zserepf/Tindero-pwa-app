@@ -21,6 +21,8 @@ export default function LoginPage(){
           try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             console.log("Login successful:", result.user);
+            router.push("/dashboard");
+
         } 
         catch (error) {
             console.error("Login error: ", error.message);
@@ -34,7 +36,7 @@ export default function LoginPage(){
         try {
             const result = await signInWithPopup(auth, googleProvider);
             console.log("Google login successful:", result.user);
-            router.push("/dashboard");
+            router.push("(authenticated)/dashboard");
         
         } 
         catch (error) {
